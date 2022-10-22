@@ -21,21 +21,20 @@ pipeline {
                 '''
             }
         }
+        stage('Test') {
+            steps {
+                sh 'echo "Fail!"; exit 1'
+                // sh 'echo "Test success!"'
+            }
+        }
         stage('Deploy') {
             steps {
                 retry(3) {
                     sh 'echo "flakey-deploy"'
                 }
-
                 timeout(time: 3, unit: 'MINUTES') {
                     sh 'echo "health-check"'
                 }
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'echo "Fail!"; exit 1'
-                // sh 'echo "Test success!"'
             }
         }
     }
@@ -48,15 +47,13 @@ pipeline {
         }
         failure {
             echo 'run only if failed'
-            mail to: '773738584@qq.com',
-                 subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-                 body: "Something is wrong with ${env.BUILD_URL}"
+            mail to: '773738584@qq.com', subject: "Failed Pipeline: ${currentBuild.fullDisplayName}", body: "Something is wrong with ${env.BUILD_URL}"
         }
         unstable {
-            echo 'This will run only if the run was marked as unstable'
+            echo 'run only if the run was marked as unstable'
         }
         changed {
-            echo 'This will run only if the state of the Pipeline has changed'
+            echo 'run only if the state of the Pipeline has changed'
             echo 'For example, if the Pipeline was previously failing but is now successful'
         }
     }
