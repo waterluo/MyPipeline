@@ -5,6 +5,11 @@ pipeline {
         DB_ENGINE    = 'sqlite'
     }
     stages {
+        stage('No-op') {
+            steps {
+                sh 'ls'
+            }
+        }
         stage('Build') {
             steps {
                 sh 'printenv'
@@ -29,20 +34,23 @@ pipeline {
         }
         stage('Test') {
             steps {
-                // sh 'echo "Fail!"; exit 1'
-                sh 'echo "Test success!"'
+                sh 'echo "Fail!"; exit 1'
+                // sh 'echo "Test success!"'
             }
         }
     }
     post {
         always {
-            echo 'This will always run'
+            echo 'always run'
         }
         success {
-            echo 'This will run only if successful'
+            echo 'run only if successful'
         }
         failure {
-            echo 'This will run only if failed'
+            echo 'run only if failed'
+            mail to: '773738584@qq.com',
+                 subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+                 body: "Something is wrong with ${env.BUILD_URL}"
         }
         unstable {
             echo 'This will run only if the run was marked as unstable'
