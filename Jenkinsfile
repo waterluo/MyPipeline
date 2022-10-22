@@ -1,8 +1,13 @@
 pipeline {
     agent any
+    environment {
+        DISABLE_AUTH = 'true'
+        DB_ENGINE    = 'sqlite'
+    }
     stages {
         stage('Build') {
             steps {
+                sh 'printenv'
                 sh 'python3 --version'
                 sh 'echo "Hello World"'
                 sh '''
